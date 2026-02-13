@@ -24,7 +24,9 @@ interface LocationClient {
 
 class DefaultLocationClient(
     private val context: Context,
-    private val client: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
+    private val client: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(
+        context
+    )
 ) : LocationClient {
 
     @SuppressLint("MissingPermission") // We assume permission is checked before calling this

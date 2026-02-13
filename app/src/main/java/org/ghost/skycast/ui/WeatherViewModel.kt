@@ -8,13 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.ghost.skycast.data.ForecastItem
 import org.ghost.skycast.data.WeatherRepository
 import org.ghost.skycast.data.WeatherResponse
-import org.ghost.skycast.data.ForecastItem
 import org.ghost.skycast.data.WeatherResult
 import org.ghost.skycast.data.WeatherStorage
 import org.ghost.skycast.location.DefaultLocationClient
-import org.ghost.skycast.location.LocationClient
 import timber.log.Timber
 
 sealed class WeatherUiState {
@@ -25,6 +24,7 @@ sealed class WeatherUiState {
         val isOffline: Boolean,
         val lastUpdated: Long = System.currentTimeMillis()
     ) : WeatherUiState()
+
     data class Error(val message: String) : WeatherUiState()
 }
 
@@ -79,7 +79,12 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                 if (location != null) {
                     Timber.d("ViewModel: Got fresh location: ${location.latitude}, ${location.longitude}")
                     // 2a. Fetch weather for the new coordinates
-                    handleResult(repository.fetchWeatherByLocation(location.latitude, location.longitude))
+                    handleResult(
+                        repository.fetchWeatherByLocation(
+                            location.latitude,
+                            location.longitude
+                        )
+                    )
                 } else {
                     Timber.w("ViewModel: Location returned null. Falling back to last known location.")
                     // 2b. Fallback to whatever was saved in SharedPreferences
@@ -105,6 +110,7 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
                     isOffline = result.isOffline
                 )
             }
+
             is WeatherResult.Error -> {
                 Timber.e("ViewModel: Result Error -> ${result.message}")
                 _uiState.value = WeatherUiState.Error(result.message)

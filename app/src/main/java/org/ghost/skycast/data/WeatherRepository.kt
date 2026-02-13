@@ -14,7 +14,6 @@ class WeatherRepository(private val storage: WeatherStorage) {
     private val apiKey = BuildConfig.WEATHER_API_KEY
 
 
-
     suspend fun fetchWeatherByCity(cityName: String): WeatherResult = withContext(Dispatchers.IO) {
         Timber.i("Repo: Fetching weather for city: $cityName")
         try {
@@ -33,22 +32,23 @@ class WeatherRepository(private val storage: WeatherStorage) {
         }
     }
 
-    suspend fun fetchWeatherByLocation(lat: Double, lon: Double): WeatherResult = withContext(Dispatchers.IO) {
-        Timber.i("Repo: Fetching weather for GPS: $lat, $lon")
-        try {
-            val current = RetrofitClient.api.getCurrentWeatherByCoords(lat, lon, apiKey)
-            val forecast = RetrofitClient.api.getForecastByCoords(lat, lon, apiKey)
+    suspend fun fetchWeatherByLocation(lat: Double, lon: Double): WeatherResult =
+        withContext(Dispatchers.IO) {
+            Timber.i("Repo: Fetching weather for GPS: $lat, $lon")
+            try {
+                val current = RetrofitClient.api.getCurrentWeatherByCoords(lat, lon, apiKey)
+                val forecast = RetrofitClient.api.getForecastByCoords(lat, lon, apiKey)
 
-            storage.saveGpsMode(lat, lon)
-            storage.saveWeatherCache(current)
-            storage.saveForecastCache(forecast)
+                storage.saveGpsMode(lat, lon)
+                storage.saveWeatherCache(current)
+                storage.saveForecastCache(forecast)
 
-            Timber.d("Repo: Network success")
-            WeatherResult.Success(current, processForecast(forecast), isOffline = false)
-        } catch (e: Exception) {
-            handleException(e)
+                Timber.d("Repo: Network success")
+                WeatherResult.Success(current, processForecast(forecast), isOffline = false)
+            } catch (e: Exception) {
+                handleException(e)
+            }
         }
-    }
 
     suspend fun refreshLastLocation(): WeatherResult {
         val mode = storage.getLastMode()
@@ -79,7 +79,8 @@ class WeatherRepository(private val storage: WeatherStorage) {
         return if (cachedCurrent != null) {
             Timber.i("Repo: Returning cached data")
             // Even if forecast is missing, we can at least show current weather
-            val forecastList = if (cachedForecast != null) processForecast(cachedForecast) else emptyList()
+            val forecastList =
+                if (cachedForecast != null) processForecast(cachedForecast) else emptyList()
 
             WeatherResult.Success(
                 current = cachedCurrent,
@@ -88,7 +89,8 @@ class WeatherRepository(private val storage: WeatherStorage) {
             )
         } else {
             Timber.e("Repo: No cache available")
-            val errorMessage = if (e is IOException) "No Internet Connection" else e.localizedMessage
+            val errorMessage =
+                if (e is IOException) "No Internet Connection" else e.localizedMessage
             WeatherResult.Error("Offline: $errorMessage")
         }
     }

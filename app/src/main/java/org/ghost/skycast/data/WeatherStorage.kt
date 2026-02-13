@@ -7,7 +7,8 @@ import timber.log.Timber
 
 class WeatherStorage(context: Context) {
 
-    private val prefs: SharedPreferences = context.getSharedPreferences("skycast_prefs", Context.MODE_PRIVATE)
+    private val prefs: SharedPreferences =
+        context.getSharedPreferences("skycast_prefs", Context.MODE_PRIVATE)
     private val gson = Gson()
 
     companion object {

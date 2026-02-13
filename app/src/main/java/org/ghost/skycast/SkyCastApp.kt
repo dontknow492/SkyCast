@@ -11,7 +11,7 @@ import coil3.request.crossfade
 import coil3.util.DebugLogger
 import timber.log.Timber
 
-class SkyCastApp : Application(), SingletonImageLoader.Factory{
+class SkyCastApp : Application(), SingletonImageLoader.Factory {
     override fun onCreate() {
         super.onCreate()
         // Initialize Timber for logging
@@ -29,7 +29,10 @@ class SkyCastApp : Application(), SingletonImageLoader.Factory{
         return ImageLoader.Builder(this)
             .memoryCache {
                 MemoryCache.Builder()
-                    .maxSizePercent(context, 0.25) // Use 25% of available memory for caching bitmaps
+                    .maxSizePercent(
+                        context,
+                        0.25
+                    ) // Use 25% of available memory for caching bitmaps
                     .build()
             }
             .diskCache {
@@ -47,7 +50,6 @@ class SkyCastApp : Application(), SingletonImageLoader.Factory{
             .crossfade(true) // Enable crossfade animation globally
             .build()
     }
-
 
 
 }
