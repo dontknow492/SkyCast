@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+#Keep all classes in the data package from being shrunk or obfuscated
+-keep class org.ghost.skycast.data.** { *; }
+
+# Standard rules to ensure Gson works correctly under the hood
+-keep class sun.misc.Unsafe { *; }
+-keep class com.google.gson.stream.** { *; }

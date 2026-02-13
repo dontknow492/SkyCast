@@ -1,13 +1,20 @@
 package org.ghost.skycast.ui.screens
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -15,12 +22,20 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ClipEntry
+import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
 
 
 /**
@@ -28,6 +43,13 @@ import androidx.compose.ui.unit.dp
  */
 @Composable
 fun ErrorView(message: String, onRetry: () -> Unit) {
+
+    val context = LocalContext.current
+    val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val scope = rememberCoroutineScope()
+    val textToCopy = message
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,23 +75,45 @@ fun ErrorView(message: String, onRetry: () -> Unit) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Text(
-            text = message,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        SelectionContainer {
+            Text(
+                text = message,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        Button(
-            onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary
-            )
-        ) {
-            Text("Try Again")
+        Row {
+            Button(
+                onClick = onRetry,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text("Try Again")
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            OutlinedButton(
+                onClick = {
+                    scope.launch {
+                        val clip = ClipData.newPlainText("copied_text", textToCopy)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            ) {
+                Text("Copy ")
+                Icon(
+                    imageVector = Icons.Default.Warning,
+                    contentDescription = "Error",
+                )
+            }
         }
+
     }
 }
 
