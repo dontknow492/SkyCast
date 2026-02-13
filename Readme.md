@@ -26,20 +26,21 @@ SkyCast is a beautiful and simple weather forecast application for Android, buil
 
 ## 🛠️ Tech Stack
 
-| Component                | Link                                                                                                   |
-| ------------------------ | ------------------------------------------------------------------------------------------------------ |
-| **UI**                   | [Jetpack Compose](https://developer.android.com/jetpack/compose)                                       |
-| **Architecture**         | [MVVM (Model-View-ViewModel)](https://developer.android.com/jetpack/guide)                              |
-| **Asynchronous**         | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html) |
-| **Dependency Injection** | [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)                         |
-| **Networking**           | [Retrofit](https://square.github.io/retrofit/) & [Moshi](https://github.com/square/moshi)                  |
-| **Location**             | [Google Location Services](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary) |
+| Component        | Link                                                                                                                        |
+|------------------|-----------------------------------------------------------------------------------------------------------------------------|
+| **UI**           | [Jetpack Compose](https://developer.android.com/jetpack/compose)                                                            |
+| **Architecture** | [MVVM (Model-View-ViewModel)](https://developer.android.com/jetpack/guide)                                                  |
+| **Asynchronous** | [Coroutines](https://kotlinlang.org/docs/coroutines-overview.html) & [Flow](https://kotlinlang.org/docs/flow.html)          |
+| **Networking**   | [Retrofit](https://square.github.io/retrofit/)                                                                              |
+| **Imaging**      | [Coil3](https://coil-kt.github.io/coil/upgrading_to_coil3/)                                                                 |
+| **Logging**      | Timber                                                                                                                      |
+| **Location**     | [Google Location Services](https://developers.google.com/android/reference/com/google/android/gms/location/package-summary) |
 
 ## 🚀 How to Run
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/your-username/SkyCast.git
+    git clone https://github.com/dontknow492/SkyCast.git
     ```
 2.  **Open in Android Studio:**
     Open the cloned repository in Android Studio.
@@ -77,5 +78,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <p align="center">
-  Made with ❤️ by [Your Name](https://github.com/your-username)
+  Made with ❤️ by [Ghost](https://github.com/dontknow492)
 </p>

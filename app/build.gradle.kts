@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -17,6 +19,17 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties()
+        val localProperties = project.rootProject.file("local.properties")
+        if (localProperties.exists()) {
+            properties.load(localProperties.inputStream())
+        }
+
+        // Inject it into the code.
+        // Note: We default to an empty string "" if the key is missing to prevent build errors.
+        val apiKey = properties.getProperty("WEATHER_API_KEY") ?: ""
+        buildConfigField("String", "WEATHER_API_KEY", apiKey)
     }
 
     buildTypes {

@@ -2,6 +2,7 @@ package org.ghost.skycast.data
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.ghost.skycast.BuildConfig
 import retrofit2.HttpException
 import timber.log.Timber
 import java.io.IOException
@@ -10,7 +11,9 @@ class WeatherRepository(private val storage: WeatherStorage) {
 
     // ⚠️ IMPORTANT: Ensure this key is valid.
     // If you regenerated the file, this might have reset to "xyz".
-    private val apiKey = "2639865e44a31373287ffa4195e6ad67"
+    private val apiKey = BuildConfig.WEATHER_API_KEY
+
+
 
     suspend fun fetchWeatherByCity(cityName: String): WeatherResult = withContext(Dispatchers.IO) {
         Timber.i("Repo: Fetching weather for city: $cityName")
