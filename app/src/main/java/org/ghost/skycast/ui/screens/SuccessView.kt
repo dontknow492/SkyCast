@@ -74,7 +74,7 @@ fun SuccessView(
     } else {
         listOf(Color(0xFF1A237E), Color(0xFF311B92)) // Deep Blue/Purple
     }
-    val sheetSize = if (state.isOffline) 100.dp else 220.dp
+    val sheetSize = if (state.isOffline) 80.dp else 200.dp
 
     BottomSheetScaffold(
         modifier = modifier,
@@ -87,7 +87,7 @@ fun SuccessView(
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize(),
-            contentPadding = PaddingValues(bottom = 80.dp), // Space for FAB
+            contentPadding = PaddingValues(bottom = 0.dp), // Space for FAB
 //        verticalArrangement = Arrangement.SpaceEvenly
         ) {
             // 1. Main Header Card
