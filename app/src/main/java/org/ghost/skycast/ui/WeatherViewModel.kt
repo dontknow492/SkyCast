@@ -13,6 +13,8 @@ import org.ghost.skycast.data.WeatherResponse
 import org.ghost.skycast.data.ForecastItem
 import org.ghost.skycast.data.WeatherResult
 import org.ghost.skycast.data.WeatherStorage
+import org.ghost.skycast.location.DefaultLocationClient
+import org.ghost.skycast.location.LocationClient
 import timber.log.Timber
 
 sealed class WeatherUiState {
@@ -29,6 +31,7 @@ sealed class WeatherUiState {
 class WeatherViewModel(application: Application) : AndroidViewModel(application) {
 
     private val storage = WeatherStorage(application)
+    private val locationClient = DefaultLocationClient(application)
     private val repository = WeatherRepository(storage)
 
     private val _uiState = MutableStateFlow<WeatherUiState>(WeatherUiState.Loading)
@@ -63,13 +66,30 @@ class WeatherViewModel(application: Application) : AndroidViewModel(application)
         Timber.d("ViewModel: refreshWeather triggered")
         viewModelScope.launch {
             _isRefreshing.update { true }
-            // Keep the current data visible while loading if possible (optional UI tweak)
-            // But to stick to the pattern, we show Loading
+
+            // Keep the current data visible while loading if possible
             if (_uiState.value is WeatherUiState.Error) {
                 _uiState.value = WeatherUiState.Loading
             }
 
-            handleResult(repository.refreshLastLocation())
+            try {
+                // 1. Try to get a fresh GPS location
+                val location = locationClient.getCurrentLocation()
+
+                if (location != null) {
+                    Timber.d("ViewModel: Got fresh location: ${location.latitude}, ${location.longitude}")
+                    // 2a. Fetch weather for the new coordinates
+                    handleResult(repository.fetchWeatherByLocation(location.latitude, location.longitude))
+                } else {
+                    Timber.w("ViewModel: Location returned null. Falling back to last known location.")
+                    // 2b. Fallback to whatever was saved in SharedPreferences
+                    handleResult(repository.refreshLastLocation())
+                }
+            } catch (e: Exception) {
+                Timber.e(e, "ViewModel: Failed to get live location. Falling back.")
+                // 2c. If GPS is disabled or permission denied, fallback
+                handleResult(repository.refreshLastLocation())
+            }
 
             _isRefreshing.update { false }
         }
